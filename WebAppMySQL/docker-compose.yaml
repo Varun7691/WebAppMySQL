@@ -1,0 +1,40 @@
+version: "3.0" # docker-compose version
+
+volumes:
+ datafiles:
+
+services:
+ mysql_db: # Container 1 for MySQL
+  image: mysql 
+  ports:
+    - 3306:3306
+  volumes:
+    - datafiles:/var/lib/mysql_db
+  restart: always
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+ 
+ postgres_db: # Container 2 for PostgreSQL
+  image: "postgres" # use latest official postgres version
+  ports:
+    - 5432:5432
+  volumes:
+    - datafiles:/var/lib/postgresql # persist data even if container shuts down
+  restart: always
+  environment:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: root
+    POSTGRES_DB: varunbarve
+ 
+ mvc: # Container 3 for our application
+  build:
+   context: .
+   dockerfile: Dockerfile
+  depends_on:
+   - mysql_db
+  ports:
+   - "8888:80"
+  restart: always
+  environment:
+    - DBHOST=mysql_db
+    - ASPNETCORE_ENVIRONMENT=Development # 'Production' in live environment
