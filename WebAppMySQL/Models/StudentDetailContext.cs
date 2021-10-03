@@ -1,10 +1,15 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore;
+
 namespace WebAppMySQL.Models
 {
-    public class StudentDetailContext
+    public class StudentDetailContext : DbContext
     {
-        public StudentDetailContext()
+        public StudentDetailContext(DbContextOptions<StudentDetailContext> options) : base(options)
         {
+
         }
+        public DbSet<StudentDetail> StudentDetails { get; set; }
+        //Table Name StudentDetails
     }
 }
